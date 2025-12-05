@@ -9,6 +9,7 @@ services:
       - "8000:8000"
     volumes:
       - .:/app
+      - static_volume:/app/staticfiles
     environment:
       - DB_NAME=mi_db
       - DB_USER=mi_user
@@ -34,4 +35,4 @@ services:
 
 volumes:
   postgres_data:
-
+  static_volume:

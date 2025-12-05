@@ -1,3 +1,4 @@
+{%  load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -33,7 +34,7 @@
         /* Fondo con imagen */
         .background-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('Background.png'); 
+            background-image: url("{% static 'img/Background.png' %}"); 
             background-size: cover; background-position: center center;
             z-index: -1; filter: brightness(0.5) saturate(0.8);
         }
@@ -182,7 +183,7 @@
         </div>
 
         <header>
-            <img src="Logo.png" alt="Logo CIAHN" class="logo-header">
+            <img src="{%  static 'img/Logo.png' %}" alt="Logo CIAHN" class="logo-header">
             <h1 data-translate="title">Parque Paleontológico<br>Los Dedos</h1>
             <p class="subtitle" data-translate="subtitle">Tu opinión nos importa</p>
         </header>
