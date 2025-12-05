@@ -3,397 +3,477 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encuesta Parque Los Dedos</title>
+    <title>Encuesta Parque Paleontológico Los Dedos - CIAHN</title>
     <style>
-        /* --- ESTILOS GENERALES (CSS) --- */
+        /* --- ESTILOS GENERALES (CIAHN) --- */
         :root {
-            --primary-color: #A67C52; /* Tono tierra/fósil */
-            --secondary-color: #5A4635; /* Marrón oscuro */
-            --accent-color: #E89B48; /* Naranja atardecer */
-            --bg-color: #F4F1EA; /* Arena claro */
-            --white: #ffffff;
-            --text-color: #333;
-            --success-color: #4CAF50;
+            --color-primary: #008C99;
+            --color-secondary: #00acc1;
+            --color-bg-page: #f0f2f5;
+            --color-text: #333333;
+            --color-white: #ffffff;
+            --color-gray-light: #e0e0e0;
+
+            /* COLORES NPS SEMÁFORO */
+            --nps-red: #e74c3c;    /* Detractores (0-6) */
+            --nps-yellow: #f1c40f; /* Pasivos (7-8) */
+            --nps-green: #27ae60;  /* Promotores (9-10) */
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            margin: 0; padding: 0;
+            background-color: var(--color-bg-page);
+            color: var(--color-text);
             min-height: 100vh;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
         }
 
+        /* Fondo con imagen */
+        .background-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('Background.png'); 
+            background-size: cover; background-position: center center;
+            z-index: -1; filter: brightness(0.5) saturate(0.8);
+        }
+
+        /* --- CONTENEDOR COMPACTO --- */
         .container {
-            background: var(--white);
-            max-width: 600px;
-            width: 100%;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            position: relative;
-            overflow: hidden;
+            width: 90%; max-width: 450px;
+            margin: 20px auto; padding: 20px 25px;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 140, 153, 0.25);
+            position: relative; border-top: 5px solid var(--color-primary);
+            max-height: 90vh; overflow-y: auto;
+        }
+
+        /* --- BOTONES DE IDIOMA (NUEVO) --- */
+        .lang-switch {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .lang-btn {
+            background: none;
+            border: 1px solid var(--color-primary);
+            border-radius: 20px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: var(--color-primary);
+            transition: all 0.3s;
+        }
+        .lang-btn.active, .lang-btn:hover {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        header { text-align: center; margin-bottom: 15px; margin-top: 25px; }
+
+        .logo-header {
+            max-width: 130px; height: auto; display: block; margin: 0 auto 10px auto;
         }
 
         h1 {
-            color: var(--secondary-color);
-            text-align: center;
-            margin-bottom: 10px;
+            color: var(--color-primary); font-size: 1.3rem; margin: 5px 0;
+            text-transform: uppercase; font-weight: 700;
         }
 
-        h2 {
-            color: var(--primary-color);
-            font-size: 1.2rem;
-            margin-top: 20px;
-            margin-bottom: 15px;
-            border-bottom: 2px solid var(--bg-color);
-            padding-bottom: 5px;
-        }
+        p.subtitle { font-size: 0.9rem; color: #666; margin: 0; }
 
-        p {
-            text-align: center;
-            color: #666;
-            margin-bottom: 25px;
-        }
-
-        /* --- BOTONES DE SELECCIÓN --- */
-        .selection-screen {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
+        /* --- PANTALLA SELECCIÓN --- */
+        #selection-screen { text-align: center; padding: 10px 0; }
+        
         .btn-choice {
-            padding: 20px;
-            border: 2px solid var(--bg-color);
-            border-radius: 10px;
-            background: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            display: block; width: 100%; padding: 25px; margin: 30px 0;
+            border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold;
+            cursor: pointer; color: white; box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .btn-fast { background: linear-gradient(135deg, var(--color-secondary), var(--color-primary)); }
+        .btn-full { background: linear-gradient(135deg, var(--color-primary), #006064); }
+        .btn-choice:hover { transform: translateY(-2px); }
+
+        /* --- FORMULARIO --- */
+        #form-container { display: none; }
+        .form-section { margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .form-section:last-child { border-bottom: none; }
+
+        label { display: block; margin-bottom: 5px; font-weight: 600; color: var(--color-primary); font-size: 0.9rem; }
+        select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95rem; background: #f9f9f9; }
+
+        /* --- ESTILOS MATRIZ 1-5 --- */
+        .rating-row { margin-bottom: 12px; background: #fdfdfd; padding: 8px; border-radius: 6px; }
+        .rating-label { font-size: 0.85rem; margin-bottom: 5px; display: block; color: #444; }
+        .rating-options { display: flex; justify-content: space-between; }
+        .rating-opt { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .rating-opt input { display: none; } 
+        .circle {
+            width: 25px; height: 25px; border-radius: 50%; background: #eee;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; font-weight: bold; color: #666; transition: all 0.2s;
+        }
+        .rating-opt input:checked + .circle { background: var(--color-primary); color: white; transform: scale(1.1); }
+
+        /* --- ESTILOS NPS SEMÁFORO --- */
+        .nps-wrapper { display: flex; justify-content: space-between; gap: 2px; margin-top: 5px; }
+        .nps-box { position: relative; flex: 1; }
+        .nps-box input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; z-index: 2; }
+        
+        .nps-label {
+            display: block; text-align: center; padding: 10px 0; background: #eee;
+            color: #555; font-weight: bold; font-size: 0.9rem; border-radius: 4px;
+            transition: all 0.2s; border-bottom: 3px solid transparent;
         }
 
-        .btn-choice:hover {
-            border-color: var(--primary-color);
-            background-color: #fff9f2;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        /* Colores NPS */
+        .nps-box.detractor .nps-label { border-bottom-color: #e57373; }
+        .nps-box.detractor input:checked + .nps-label, .nps-box.detractor:hover .nps-label { 
+            background: var(--nps-red); color: white; border-bottom-color: var(--nps-red); 
         }
 
-        .icon {
-            font-size: 2rem;
-            background: var(--bg-color);
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            color: var(--primary-color);
+        .nps-box.passive .nps-label { border-bottom-color: #f1c40f; }
+        .nps-box.passive input:checked + .nps-label, .nps-box.passive:hover .nps-label { 
+            background: var(--nps-yellow); color: white; border-bottom-color: var(--nps-yellow);
+            text-shadow: 0 1px 1px rgba(0,0,0,0.2);
         }
 
-        .choice-text strong {
-            display: block;
-            font-size: 1.1rem;
-            color: var(--secondary-color);
+        .nps-box.promoter .nps-label { border-bottom-color: #2ecc71; }
+        .nps-box.promoter input:checked + .nps-label, .nps-box.promoter:hover .nps-label { 
+            background: var(--nps-green); color: white; border-bottom-color: var(--nps-green); 
         }
 
-        .choice-text span {
-            font-size: 0.9rem;
-            color: #888;
-        }
+        .nps-legend { display: flex; justify-content: space-between; margin-top: 5px; padding: 0 5px; }
 
-        /* --- FORMULARIOS --- */
-        .form-section {
-            display: none; /* Oculto por defecto */
-            animation: fadeIn 0.5s ease;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--secondary-color);
-        }
-
-        textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            resize: vertical;
-            font-family: inherit;
-            box-sizing: border-box; /* Fix padding issues */
+        /* --- BOTONES ACCIÓN --- */
+        .submit-btn {
+            background-color: var(--color-primary); color: white; width: 100%; padding: 15px;
+            border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 10px;
         }
         
-        textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
+        .back-btn {
+            display:flex; align-items: center; justify-content: center; background-color: transparent;
+            border: 2px solid var(--color-primary); color: var(--color-primary);
+            padding: 8px 20px; border-radius: 50px; font-weight: 700; font-size: 0.9rem;
+            cursor: pointer; transition: all 0.3s ease; text-decoration: none; margin: 0 auto 20px auto;
         }
+        .back-btn::before { content: '←'; margin-right: 8px; font-size: 1.2rem; transition: transform 0.3s ease; line-height: 0; }
+        .back-btn:hover { background-color: var(--color-primary); color: white; box-shadow: 0 5px 15px rgba(0, 140, 153, 0.3); transform: translateY(-2px); border-color: transparent; }
+        .back-btn:hover::before { transform: translateX(-4px); }
 
-        /* Escala Likert / NPS */
-        .scale-container {
-            display: flex;
-            justify-content: space-between;
-            background: var(--bg-color);
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 5px;
-        }
+        .hidden { display: none; }
 
-        .radio-label {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            font-size: 0.8rem;
-            color: #666;
-        }
-        
-        .radio-label input {
-            margin-bottom: 5px;
-            accent-color: var(--primary-color);
-            width: 18px;
-            height: 18px;
-        }
-
-        /* Botones de acción */
-        .btn-submit {
-            width: 100%;
-            padding: 15px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-            margin-top: 10px;
-        }
-
-        .btn-submit:hover {
-            background-color: var(--secondary-color);
-        }
-
-        .btn-back {
-            background: none;
-            border: none;
-            color: #999;
-            cursor: pointer;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.9rem;
-            padding: 0;
-        }
-
-        .btn-back:hover {
-            color: var(--text-color);
-        }
-
-        /* Pantalla de Éxito */
-        .success-screen {
-            display: none;
-            text-align: center;
-            padding: 40px 20px;
-        }
-        .success-icon {
-            font-size: 4rem;
-            color: var(--success-color);
-            margin-bottom: 20px;
-        }
-
-        /* Animaciones */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Responsive ajustes */
-        @media (max-width: 480px) {
-            .scale-container {
-                flex-wrap: wrap;
-                gap: 5px;
-                justify-content: center;
-            }
-            .radio-label {
-                margin: 0 5px;
-            }
-        }
     </style>
 </head>
 <body>
 
+    <div class="background-overlay"></div>
+
     <div class="container">
         
-        <div id="screen-selection" class="form-section" style="display: block;">
-            <h1>¡Hola explorador! 🦕</h1>
-            <p>Gracias por visitar el Parque "Los Dedos". Tu opinión nos ayuda a proteger este patrimonio. ¿Cuánto tiempo tienes?</p>
+        <div class="lang-switch">
+            <button class="lang-btn active" onclick="setLanguage('es')">ES</button>
+            <button class="lang-btn" onclick="setLanguage('en')">EN</button>
+        </div>
+
+        <header>
+            <img src="Logo.png" alt="Logo CIAHN" class="logo-header">
+            <h1 data-translate="title">Parque Paleontológico<br>Los Dedos</h1>
+            <p class="subtitle" data-translate="subtitle">Tu opinión nos importa</p>
+        </header>
+
+        <div id="selection-screen">
+            <button class="btn-choice btn-fast" onclick="selectForm('fast')" data-translate="btn_fast">
+                Encuesta Rápida 🚀
+            </button>
+            <button class="btn-choice btn-full" onclick="selectForm('full')" data-translate="btn_full">
+                Experiencia Completa 🦕
+            </button>
+        </div>
+
+        <form id="form-container" onsubmit="submitForm(event)">
+            <button type="button" class="back-btn" onclick="goBack()" data-translate="btn_back">Volver al inicio</button>
+            <input type="hidden" id="form-type" name="form_type" value="">
+
+            <div class="form-section">
+                <label data-translate="label_sector">1. Sector a opinar:</label>
+                <select name="sector" required>
+                    <option value="" disabled selected data-translate="opt_select">Selecciona...</option>
+                    <option value="1" data-translate="opt_zone1">Zona 1: Acceso / Mandíbula</option>
+                    <option value="2" data-translate="opt_zone2">Zona 2: Fósiles Marinos</option>
+                    <option value="3" data-translate="opt_zone3">Zona 3: Formaciones Rocosas</option>
+                    <option value="4" data-translate="opt_zone4">Zona 4: Mirador Panorámico</option>
+                    <option value="5" data-translate="opt_zone5">Zona 5: Sendero General</option>
+                </select>
+            </div>
             
-            <div class="selection-screen">
-                <div class="btn-choice" onclick="showForm('short')">
-                    <div class="icon">⚡</div>
-                    <div class="choice-text">
-                        <strong>Solo un segundo</strong>
-                        <span>Encuesta rápida (1 pregunta)</span>
+            <div class="form-section">
+                <label data-translate="label_origin">2. Origen:</label>
+                <select name="nacionalidad" required>
+                    <option value="" disabled selected data-translate="opt_select">Selecciona...</option>
+                    <option value="chile">Chile</option>
+                    <option value="America">America</option>
+                    <option value="Europa">Europe</option>
+                    <option value="Africa">Africa</option>
+                    <option value="Asia">Asia</option>
+                    <option value="Oceania">Oceania</option>
+                </select>
+            </div>
+
+            <div class="form-section">
+                <label data-translate="label_age">3. Rango Etario:</label>
+                <select name="edad" required>
+                    <option value="" disabled selected data-translate="opt_select">Selecciona...</option>
+                    <option value="-18" data-translate="opt_under18">Menor de 18</option>
+                    <option value="18-30">18 - 30</option>
+                    <option value="31-50">31 - 50</option>
+                    <option value="51-65">51 - 65</option>
+                    <option value="+65" data-translate="opt_over65">Mayor de 65</option>
+                </select>
+            </div>
+
+            <div class="form-section">
+                <label data-translate="label_motive">4. Motivo Visita:</label>
+                <select name="motivo" required>
+                    <option value="" disabled selected data-translate="opt_select">Selecciona...</option>
+                    <option value="turismo" data-translate="opt_tourism">Entretención / Turismo</option>
+                    <option value="educacion" data-translate="opt_education">Escolar / Universidad</option>
+                    <option value="curiosidad" data-translate="opt_science">Interés Científico</option>
+                    <option value="paso" data-translate="opt_passing">De paso</option>
+                </select>
+            </div>
+
+            <div id="extended-fields" class="hidden">
+                
+                <div class="form-section">
+                    <label data-translate="label_rating_title">5. Evalúa del 1 (Malo) al 5 (Excelente):</label>
+                    
+                    <div class="rating-row">
+                        <span class="rating-label" data-translate="rate_path">El sendero y las formaciones:</span>
+                        <div class="rating-options">
+                            <script>for(let i=1; i<=5; i++) { document.write(`<label class="rating-opt"><input type="radio" name="rate_sendero" value="${i}"><span class="circle">${i}</span></label>`); }</script>
+                        </div>
+                    </div>
+
+                    <div class="rating-row">
+                        <span class="rating-label" data-translate="rate_signs">Señalética e info educativa:</span>
+                        <div class="rating-options">
+                            <script>for(let i=1; i<=5; i++) { document.write(`<label class="rating-opt"><input type="radio" name="rate_info" value="${i}"><span class="circle">${i}</span></label>`); }</script>
+                        </div>
+                    </div>
+
+                    <div class="rating-row">
+                        <span class="rating-label" data-translate="rate_clean">Limpieza y conservación:</span>
+                        <div class="rating-options">
+                            <script>for(let i=1; i<=5; i++) { document.write(`<label class="rating-opt"><input type="radio" name="rate_limpieza" value="${i}"><span class="circle">${i}</span></label>`); }</script>
+                        </div>
+                    </div>
+
+                    <div class="rating-row">
+                        <span class="rating-label" data-translate="rate_staff">Atención del personal:</span>
+                        <div class="rating-options">
+                            <script>for(let i=1; i<=5; i++) { document.write(`<label class="rating-opt"><input type="radio" name="rate_personal" value="${i}"><span class="circle">${i}</span></label>`); }</script>
+                        </div>
                     </div>
                 </div>
 
-                <div class="btn-choice" onclick="showForm('long')">
-                    <div class="icon">📝</div>
-                    <div class="choice-text">
-                        <strong>Quiero contar mi experiencia</strong>
-                        <span>Encuesta detallada (2 min)</span>
-                    </div>
+                <div class="form-section">
+                    <label data-translate="label_liked">6. ¿Qué fue lo que más te gustó?</label>
+                    <textarea name="comentario_positivo" rows="2" placeholder="Ej: La vista, los fósiles..." data-placeholder="ph_liked"></textarea>
+                </div>
+
+                <div class="form-section">
+                    <label data-translate="label_problems">7. ¿Algún problema o aspecto a mejorar?</label>
+                    <textarea name="comentario_negativo" rows="2" placeholder="Ej: Falta sombra, baños..." data-placeholder="ph_problems"></textarea>
                 </div>
             </div>
-        </div>
 
-        <div id="form-short" class="form-section">
-            <button class="btn-back" onclick="goBack()">← Volver</button>
-            <h1>Ruta Rápida</h1>
-            <form onsubmit="submitForm(event)">
+            <div class="form-section">
+                <label data-translate="label_nps">¿Recomendarías el parque a un familiar u amigo? (0-10)</label>
                 
-                <div class="form-group">
-                    <label>¿Recomendarías visitar el parque a tus amigos o familiares?</label>
-                    <div class="scale-container" style="justify-content: space-around;">
-                        <label class="radio-label"><input type="radio" name="nps" value="1" required>😡<br>No</label>
-                        <label class="radio-label"><input type="radio" name="nps" value="2">😕<br>Poco</label>
-                        <label class="radio-label"><input type="radio" name="nps" value="3">😐<br>Tal vez</label>
-                        <label class="radio-label"><input type="radio" name="nps" value="4">🙂<br>Sí</label>
-                        <label class="radio-label"><input type="radio" name="nps" value="5">🤩<br>¡Seguro!</label>
-                    </div>
+                <div class="nps-wrapper">
+                    <script>
+                        for(let i=0; i<=6; i++){ document.write(`<div class="nps-box detractor"><input type="radio" name="nps" value="${i}" required><span class="nps-label">${i}</span></div>`); }
+                    </script>
+                    <script>
+                        for(let i=7; i<=8; i++){ document.write(`<div class="nps-box passive"><input type="radio" name="nps" value="${i}" required><span class="nps-label">${i}</span></div>`); }
+                    </script>
+                    <script>
+                        for(let i=9; i<=10; i++){ document.write(`<div class="nps-box promoter"><input type="radio" name="nps" value="${i}" required><span class="nps-label">${i}</span></div>`); }
+                    </script>
                 </div>
 
-                <div class="form-group">
-                    <label>¿Por qué elegiste esa nota? (Opcional)</label>
-                    <textarea rows="3" placeholder="Ej: Me gustaron mucho los fósiles..."></textarea>
+                <div class="nps-legend">
+                    <span style="font-size: 0.8rem; color: #e74c3c;" data-translate="nps_no">😠 No</span>
+                    <span style="font-size: 0.8rem; color: #f1c40f;" data-translate="nps_maybe">😐 Quizás</span>
+                    <span style="font-size: 0.8rem; color: #27ae60;" data-translate="nps_yes">😃 ¡Sí!</span>
                 </div>
+            </div>
 
-                <button type="submit" class="btn-submit">Enviar Opinión</button>
-            </form>
-        </div>
-
-        <div id="form-long" class="form-section">
-            <button class="btn-back" onclick="goBack()">← Volver</button>
-            <h1>Experiencia Completa</h1>
-            <p style="margin-bottom: 15px; font-size: 0.9rem;">Ayúdanos a mejorar cada rincón del parque.</p>
+            <div id="fast-comment-section" class="form-section">
+                <label data-translate="label_general_comment">¿Porque elegiste esa opción? Comentario:</label>
+                <textarea name="comentario_general" rows="2" placeholder="Escribe aquí..." data-placeholder="ph_general"></textarea>
+            </div>
             
-            <form onsubmit="submitForm(event)">
-                
-                <h2>📍 Evaluación por Sectores</h2>
-                
-                <div class="form-group">
-                    <label>1. Recepción y Acceso</label>
-                    <div class="scale-container">
-                        <label class="radio-label"><input type="radio" name="s1" value="1" required>1<br>Malo</label>
-                        <label class="radio-label"><input type="radio" name="s1" value="2">2</label>
-                        <label class="radio-label"><input type="radio" name="s1" value="3">3</label>
-                        <label class="radio-label"><input type="radio" name="s1" value="4">4</label>
-                        <label class="radio-label"><input type="radio" name="s1" value="5">5<br>Exc.</label>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>2. Estado de los Senderos</label>
-                    <div class="scale-container">
-                        <label class="radio-label"><input type="radio" name="s2" value="1" required>1<br>Malo</label>
-                        <label class="radio-label"><input type="radio" name="s2" value="2">2</label>
-                        <label class="radio-label"><input type="radio" name="s2" value="3">3</label>
-                        <label class="radio-label"><input type="radio" name="s2" value="4">4</label>
-                        <label class="radio-label"><input type="radio" name="s2" value="5">5<br>Exc.</label>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>3. Claridad de la Información (Educativa)</label>
-                    <div class="scale-container">
-                        <label class="radio-label"><input type="radio" name="s3" value="1" required>1<br>Malo</label>
-                        <label class="radio-label"><input type="radio" name="s3" value="2">2</label>
-                        <label class="radio-label"><input type="radio" name="s3" value="3">3</label>
-                        <label class="radio-label"><input type="radio" name="s3" value="4">4</label>
-                        <label class="radio-label"><input type="radio" name="s3" value="5">5<br>Exc.</label>
-                    </div>
-                </div>
-
-                <h2>🗣️ Cuéntanos más (Para nuestra IA)</h2>
-                
-                <div class="form-group">
-                    <label>4. ¿Qué fue lo MEJOR de tu visita?</label>
-                    <textarea rows="3" placeholder="El momento más memorable..." required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>5. ¿Qué podríamos MEJORAR?</label>
-                    <textarea rows="3" placeholder="Si pudieras cambiar una cosa..." required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>6. Comentarios finales</label>
-                    <textarea rows="2" placeholder="Espacio libre..."></textarea>
-                </div>
-
-                <button type="submit" class="btn-submit">Enviar Evaluación Completa</button>
-            </form>
-        </div>
-
-        <div id="screen-success" class="success-screen">
-            <div class="success-icon">✅</div>
-            <h1>¡Gracias!</h1>
-            <p>Tu opinión ha quedado registrada.</p>
-            <p>¡Esperamos verte pronto en el pasado! 🦕</p>
-            <button class="btn-submit" onclick="location.reload()" style="background-color: #666;">Volver al inicio</button>
-        </div>
-
+            <button type="submit" class="submit-btn" data-translate="btn_submit">Enviar Encuesta</button>
+        </form>
     </div>
 
     <script>
-        // --- LÓGICA DE JAVASCRIPT ---
-
-        // Función para cambiar entre pantallas
-        function showForm(type) {
-            // Ocultar selección
-            document.getElementById('screen-selection').style.display = 'none';
-            
-            // Mostrar formulario correspondiente
-            if (type === 'short') {
-                document.getElementById('form-short').style.display = 'block';
-            } else {
-                document.getElementById('form-long').style.display = 'block';
+        // --- 1. DICCIONARIO DE TRADUCCIÓN ---
+        const translations = {
+            es: {
+                title: "Parque Paleontológico<br>Los Dedos",
+                subtitle: "Tu opinión nos importa",
+                btn_fast: "Encuesta Rápida 🚀",
+                btn_full: "Experiencia Completa 🦕",
+                btn_back: "Volver al inicio",
+                label_sector: "1. Sector a opinar:",
+                opt_select: "Selecciona...",
+                opt_zone1: "Zona 1: Acceso / Mandíbula",
+                opt_zone2: "Zona 2: Fósiles Marinos",
+                opt_zone3: "Zona 3: Formaciones Rocosas",
+                opt_zone4: "Zona 4: Mirador Panorámico",
+                opt_zone5: "Zona 5: Sendero General",
+                label_origin: "2. Origen:",
+                label_age: "3. Rango Etario:",
+                opt_under18: "Menor de 18",
+                opt_over65: "Mayor de 65",
+                label_motive: "4. Motivo Visita:",
+                opt_tourism: "Entretención / Turismo",
+                opt_education: "Escolar / Universidad",
+                opt_science: "Interés Científico",
+                opt_passing: "De paso",
+                label_rating_title: "5. Evalúa del 1 (Malo) al 5 (Excelente):",
+                rate_path: "El sendero y las formaciones:",
+                rate_signs: "Señalética e info educativa:",
+                rate_clean: "Limpieza y conservación:",
+                rate_staff: "Atención del personal:",
+                label_liked: "6. ¿Qué fue lo que más te gustó?",
+                ph_liked: "Ej: La vista, los fósiles...",
+                label_problems: "7. ¿Algún problema o aspecto a mejorar?",
+                ph_problems: "Ej: Falta sombra, baños...",
+                label_nps: "¿Recomendarías el parque a un familiar u amigo? (0-10)",
+                nps_no: "😠 No",
+                nps_maybe: "😐 Quizás",
+                nps_yes: "😃 ¡Sí!",
+                label_general_comment: "¿Por qué elegiste esa opción? Comentario:",
+                ph_general: "Escribe aquí...",
+                btn_submit: "Enviar Encuesta"
+            },
+            en: {
+                title: "Paleontological Park<br>Los Dedos",
+                subtitle: "Your opinion matters",
+                btn_fast: "Quick Survey 🚀",
+                btn_full: "Full Experience 🦕",
+                btn_back: "Back to Start",
+                label_sector: "1. Sector to rate:",
+                opt_select: "Select...",
+                opt_zone1: "Zone 1: Access / Jaw",
+                opt_zone2: "Zone 2: Marine Fossils",
+                opt_zone3: "Zone 3: Rock Formations",
+                opt_zone4: "Zone 4: Panoramic Viewpoint",
+                opt_zone5: "Zone 5: General Trail",
+                label_origin: "2. Origin:",
+                label_age: "3. Age Range:",
+                opt_under18: "Under 18",
+                opt_over65: "Over 65",
+                label_motive: "4. Visit Reason:",
+                opt_tourism: "Leisure / Tourism",
+                opt_education: "School / University",
+                opt_science: "Scientific Interest",
+                opt_passing: "Just passing through",
+                label_rating_title: "5. Rate from 1 (Poor) to 5 (Excellent):",
+                rate_path: "Trails and formations:",
+                rate_signs: "Signage & educational info:",
+                rate_clean: "Cleanliness & conservation:",
+                rate_staff: "Staff service:",
+                label_liked: "6. What did you like the most?",
+                ph_liked: "Ex: The view, the fossils...",
+                label_problems: "7. Any problems or improvements?",
+                ph_problems: "Ex: Lack of shade, restrooms...",
+                label_nps: "Would you recommend the park to a friend? (0-10)",
+                nps_no: "😠 No",
+                nps_maybe: "😐 Maybe",
+                nps_yes: "😃 Yes!",
+                label_general_comment: "Why did you choose that rating? Comment:",
+                ph_general: "Write here...",
+                btn_submit: "Submit Survey"
             }
+        };
+
+        // --- 2. FUNCIÓN PARA CAMBIAR IDIOMA ---
+        function setLanguage(lang) {
+            // Actualizar textos normales
+            const elements = document.querySelectorAll('[data-translate]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-translate');
+                if (translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+
+            // Actualizar placeholders (textos dentro de inputs)
+            const placeholders = document.querySelectorAll('[data-placeholder]');
+            placeholders.forEach(el => {
+                const key = el.getAttribute('data-placeholder');
+                if (translations[lang][key]) {
+                    el.setAttribute('placeholder', translations[lang][key]);
+                }
+            });
+
+            // Actualizar estado visual de los botones
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            // Busca el botón que tiene el onclick con el idioma actual y lo activa
+            document.querySelector(`.lang-btn[onclick="setLanguage('${lang}')"]`).classList.add('active');
         }
 
-        // Función para volver atrás
+
+        // --- CÓDIGO EXISTENTE DEL FORMULARIO ---
+        const selectionScreen = document.getElementById('selection-screen');
+        const formContainer = document.getElementById('form-container');
+        const extendedFields = document.getElementById('extended-fields');
+        const fastCommentSection = document.getElementById('fast-comment-section');
+        const formTypeInput = document.getElementById('form-type');
+
+        function selectForm(type) {
+            selectionScreen.style.display = 'none';
+            formContainer.style.display = 'block';
+
+            if (type === 'fast') {
+                extendedFields.classList.add('hidden');
+                fastCommentSection.style.display = 'block';
+                formTypeInput.value = 'rapido';
+                setRequiredExtenso(false); 
+            } else {
+                extendedFields.classList.remove('hidden');
+                fastCommentSection.style.display = 'block';
+                formTypeInput.value = 'extenso';
+                setRequiredExtenso(true);
+            }
+            document.querySelector('.container').scrollTop = 0;
+        }
+
         function goBack() {
-            document.getElementById('form-short').style.display = 'none';
-            document.getElementById('form-long').style.display = 'none';
-            document.getElementById('screen-selection').style.display = 'block';
+            formContainer.style.display = 'none';
+            selectionScreen.style.display = 'block';
         }
 
-        // Simulación de envío de formulario
-        function submitForm(event) {
-            event.preventDefault(); // Evita que la página se recargue
-            
-            // Aquí iría la lógica para enviar los datos a tu backend/base de datos
-            // const formData = new FormData(event.target);
-            // ... fetch(url, { method: 'POST', body: formData }) ...
+        function setRequiredExtenso(isRequired) {
+            // Lógica para requerir campos si es necesario
+        }
 
-            // Ocultar formularios y mostrar pantalla de éxito
-            document.getElementById('form-short').style.display = 'none';
-            document.getElementById('form-long').style.display = 'none';
-            document.getElementById('screen-success').style.display = 'block';
+        function submitForm(event) {
+            event.preventDefault();
+            console.log("Enviado. Tipo:", formTypeInput.value);
+            alert("¡Gracias! Tu opinión es vital para el Parque Los Dedos."); // Esto también se podría traducir si quieres
+            event.target.reset();
+            goBack();
         }
     </script>
 </body>
