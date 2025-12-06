@@ -12,11 +12,16 @@ WORKDIR /app
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
+COPY entrypoint.sh /entrypoint.sh
 # Copiar el proyecto
 COPY . /app/
 
 # Exponer el puerto
 EXPOSE 8000
+
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+
 
 # Comando por defecto
 CMD ["gunicorn", "Proyecto.wsgi:application", "-b", "0.0.0.0:8000"]
