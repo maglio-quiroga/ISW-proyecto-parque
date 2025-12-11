@@ -1,4 +1,4 @@
-{%  load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,8 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token }}">
     <title>Encuesta Parque Paleontológico Los Dedos - CIAHN</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        /* --- ESTILOS GENERALES (CIAHN) --- */
+        /* =========================================
+           ESTILOS GENERALES (CIAHN)
+           ========================================= */
         :root {
             --color-primary: #008C99;
             --color-secondary: #00acc1;
@@ -17,11 +22,12 @@
             --color-gray-light: #e0e0e0;
 
             /* COLORES NPS SEMÁFORO */
-            --nps-red: #e74c3c;    /* Detractores (0-6) */
-            --nps-yellow: #f1c40f; /* Pasivos (7-8) */
-            --nps-green: #27ae60;  /* Promotores (9-10) */
+            --nps-red: #e74c3c;    
+            --nps-yellow: #f1c40f; 
+            --nps-green: #27ae60;  
         }
 
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0; padding: 0;
@@ -30,9 +36,9 @@
             min-height: 100vh;
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
+            transition: all 0.3s ease;
         }
 
-        /* Fondo con imagen */
         .background-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: url("{% static 'img/Background.png' %}"); 
@@ -40,7 +46,6 @@
             z-index: -1; filter: brightness(0.5) saturate(0.8);
         }
 
-        /* --- CONTENEDOR COMPACTO --- */
         .container {
             width: 90%; max-width: 450px;
             margin: 20px auto; padding: 20px 25px;
@@ -51,65 +56,52 @@
             max-height: 90vh; overflow-y: auto;
         }
 
-        /* --- BOTONES DE IDIOMA (NUEVO) --- */
+        /* Botones de Idioma */
         .lang-switch {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            display: flex;
-            gap: 10px;
+            position: absolute; top: 15px; right: 20px;
+            display: flex; gap: 10px;
         }
         .lang-btn {
-            background: none;
-            border: 1px solid var(--color-primary);
-            border-radius: 20px;
-            padding: 5px 10px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: bold;
-            color: var(--color-primary);
-            transition: all 0.3s;
+            background: none; border: 1px solid var(--color-primary);
+            border-radius: 20px; padding: 5px 10px;
+            cursor: pointer; font-size: 0.8rem; font-weight: bold;
+            color: var(--color-primary); transition: all 0.3s;
         }
         .lang-btn.active, .lang-btn:hover {
-            background: var(--color-primary);
-            color: white;
+            background: var(--color-primary); color: white;
         }
 
         header { text-align: center; margin-bottom: 15px; margin-top: 25px; }
-
-        .logo-header {
-            max-width: 130px; height: auto; display: block; margin: 0 auto 10px auto;
-        }
-
+        .logo-header { max-width: 130px; height: auto; display: block; margin: 0 auto 10px auto; }
         h1 {
             color: var(--color-primary); font-size: 1.3rem; margin: 5px 0;
             text-transform: uppercase; font-weight: 700;
         }
-
         p.subtitle { font-size: 0.9rem; color: #666; margin: 0; }
 
-        /* --- PANTALLA SELECCIÓN --- */
+        /* Pantalla Selección */
         #selection-screen { text-align: center; padding: 10px 0; }
-        
         .btn-choice {
-            display: block; width: 100%; padding: 25px; margin: 30px 0;
+            display: flex; align-items: center; justify-content: center; gap: 10px; /* Alineación icono-texto */
+            width: 100%; padding: 25px; margin: 30px 0;
             border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold;
             cursor: pointer; color: white; box-shadow: 0 3px 5px rgba(0,0,0,0.1);
             transition: transform 0.2s;
         }
+        .btn-choice i { font-size: 1.4rem; } /* Tamaño iconos botones */
         .btn-fast { background: linear-gradient(135deg, var(--color-secondary), var(--color-primary)); }
         .btn-full { background: linear-gradient(135deg, var(--color-primary), #006064); }
         .btn-choice:hover { transform: translateY(-2px); }
 
-        /* --- FORMULARIO --- */
+        /* Formularios */
         #form-container { display: none; }
         .form-section { margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
         .form-section:last-child { border-bottom: none; }
 
         label { display: block; margin-bottom: 5px; font-weight: 600; color: var(--color-primary); font-size: 0.9rem; }
-        select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95rem; background: #f9f9f9; }
+        select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95rem; background: #f9f9f9; box-sizing: border-box; }
 
-        /* --- ESTILOS MATRIZ 1-5 --- */
+        /* Rating 1-5 */
         .rating-row { margin-bottom: 12px; background: #fdfdfd; padding: 8px; border-radius: 6px; }
         .rating-label { font-size: 0.85rem; margin-bottom: 5px; display: block; color: #444; }
         .rating-options { display: flex; justify-content: space-between; }
@@ -122,7 +114,7 @@
         }
         .rating-opt input:checked + .circle { background: var(--color-primary); color: white; transform: scale(1.1); }
 
-        /* --- ESTILOS NPS SEMÁFORO --- */
+        /* NPS Styles */
         .nps-wrapper { display: flex; justify-content: space-between; gap: 2px; margin-top: 5px; }
         .nps-box { position: relative; flex: 1; }
         .nps-box input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; z-index: 2; }
@@ -133,42 +125,108 @@
             transition: all 0.2s; border-bottom: 3px solid transparent;
         }
 
-        /* Colores NPS */
         .nps-box.detractor .nps-label { border-bottom-color: #e57373; }
         .nps-box.detractor input:checked + .nps-label, .nps-box.detractor:hover .nps-label { 
             background: var(--nps-red); color: white; border-bottom-color: var(--nps-red); 
         }
-
         .nps-box.passive .nps-label { border-bottom-color: #f1c40f; }
         .nps-box.passive input:checked + .nps-label, .nps-box.passive:hover .nps-label { 
             background: var(--nps-yellow); color: white; border-bottom-color: var(--nps-yellow);
-            text-shadow: 0 1px 1px rgba(0,0,0,0.2);
         }
-
         .nps-box.promoter .nps-label { border-bottom-color: #2ecc71; }
         .nps-box.promoter input:checked + .nps-label, .nps-box.promoter:hover .nps-label { 
             background: var(--nps-green); color: white; border-bottom-color: var(--nps-green); 
         }
-
+        
+        /* Leyenda NPS con Iconos */
         .nps-legend { display: flex; justify-content: space-between; margin-top: 5px; padding: 0 5px; }
+        .nps-legend span { display: flex; align-items: center; gap: 5px; font-weight: 600; }
+        .nps-legend i { font-size: 1.1rem; }
 
-        /* --- BOTONES ACCIÓN --- */
         .submit-btn {
             background-color: var(--color-primary); color: white; width: 100%; padding: 15px;
             border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 10px;
         }
-        
         .back-btn {
             display:flex; align-items: center; justify-content: center; background-color: transparent;
             border: 2px solid var(--color-primary); color: var(--color-primary);
             padding: 8px 20px; border-radius: 50px; font-weight: 700; font-size: 0.9rem;
             cursor: pointer; transition: all 0.3s ease; text-decoration: none; margin: 0 auto 20px auto;
         }
-        .back-btn::before { content: '←'; margin-right: 8px; font-size: 1.2rem; transition: transform 0.3s ease; line-height: 0; }
-        .back-btn:hover { background-color: var(--color-primary); color: white; box-shadow: 0 5px 15px rgba(0, 140, 153, 0.3); transform: translateY(-2px); border-color: transparent; }
-        .back-btn:hover::before { transform: translateX(-4px); }
-
+        .back-btn i { margin-right: 8px; }
+        .back-btn:hover { background-color: var(--color-primary); color: white; }
         .hidden { display: none; }
+
+        /* =========================================
+           ESTILOS DE ACCESIBILIDAD
+           ========================================= */
+        .acc-trigger {
+            position: fixed; bottom: 20px; left: 20px;
+            width: 50px; height: 50px;
+            background-color: var(--color-primary); color: white;
+            border-radius: 50%; border: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            font-size: 1.5rem; cursor: pointer; z-index: 1000;
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.3s;
+        }
+        .acc-trigger:hover { transform: scale(1.1); }
+
+        .acc-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 2000;
+            display: none; justify-content: center; align-items: center;
+        }
+        .acc-modal {
+            background: white; width: 90%; max-width: 400px;
+            border-radius: 12px; padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative;
+        }
+        .acc-modal h2 { color: var(--color-primary); margin-top: 0; font-size: 1.2rem; text-align: center; }
+        .acc-close {
+            position: absolute; top: 10px; right: 15px;
+            font-size: 1.5rem; cursor: pointer; color: #666;
+            background: none; border: none;
+        }
+
+        .acc-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .acc-btn {
+            padding: 12px; border: 1px solid var(--color-primary);
+            background: white; color: var(--color-primary);
+            border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+            display: flex; flex-direction: column; align-items: center; transition: all 0.2s;
+        }
+        .acc-btn:hover, .acc-btn.active { background: var(--color-primary); color: white; }
+        
+        /* Iconos dentro del modal */
+        .acc-btn i { font-size: 1.5rem; margin-bottom: 8px; }
+
+        /* Modos Accesibilidad */
+        body.acc-mode-text-lg { font-size: 1.2rem; }
+        body.acc-mode-text-lg .container { max-width: 600px; }
+        
+        body.acc-mode-contrast {
+            --color-primary: #ffff00;   
+            --color-secondary: #00ffff; 
+            --color-bg-page: #000000;   
+            --color-text: #ffffff;      
+            --color-white: #000000;     
+            --color-gray-light: #333333;
+        }
+        body.acc-mode-contrast .container { border: 2px solid white; background: #000; }
+        body.acc-mode-contrast .background-overlay { display: none; }
+        body.acc-mode-contrast .btn-choice, 
+        body.acc-mode-contrast .submit-btn { 
+            background: black; border: 2px solid var(--color-primary); color: var(--color-primary); 
+        }
+        body.acc-mode-contrast input, 
+        body.acc-mode-contrast select, 
+        body.acc-mode-contrast textarea {
+            background: #000; color: #fff; border: 1px solid white;
+        }
+        
+        body.acc-mode-grayscale { filter: grayscale(100%); }
+        body.acc-mode-readable { font-family: 'Verdana', 'Arial', sans-serif; letter-spacing: 0.05rem; word-spacing: 0.1rem; line-height: 1.6; }
 
     </style>
 </head>
@@ -184,23 +242,25 @@
         </div>
 
         <header>
-            <img src="{%  static 'img/Logo.png' %}" alt="Logo CIAHN" class="logo-header">
+            <img src="{% static 'img/Logo.png' %}" alt="Logo CIAHN" class="logo-header">
             <h1 data-translate="title">Parque Paleontológico<br>Los Dedos</h1>
             <p class="subtitle" data-translate="subtitle">Tu opinión nos importa</p>
         </header>
 
         <div id="selection-screen">
             <button class="btn-choice btn-fast" onclick="selectForm('fast')" data-translate="btn_fast">
-                Encuesta Rápida 🚀
+                <i class="fas fa-rocket"></i> Encuesta Rápida
             </button>
             <button class="btn-choice btn-full" onclick="selectForm('full')" data-translate="btn_full">
-                Experiencia Completa 🦕
+                <i class="fas fa-bone"></i> Experiencia Completa
             </button>
         </div>
 
         <form id="form-container" onsubmit="submitForm(event)">
              {% csrf_token %}
-            <button type="button" class="back-btn" onclick="goBack()" data-translate="btn_back">Volver al inicio</button>
+            <button type="button" class="back-btn" onclick="goBack()" data-translate="btn_back">
+                <i class="fas fa-arrow-left"></i> Volver al inicio
+            </button>
             <input type="hidden" id="form-type" name="form_type" value="">
 
             <div class="form-section">
@@ -220,11 +280,11 @@
                 <select name="nacionalidad" required>
                     <option value="" disabled selected data-translate="opt_select">Selecciona...</option>
                     <option value="chile">Chile</option>
-                    <option value="America">America</option>
-                    <option value="Europa">Europe</option>
-                    <option value="Africa">Africa</option>
+                    <option value="America">América</option>
+                    <option value="Europa">Europa</option>
+                    <option value="Africa">África</option>
                     <option value="Asia">Asia</option>
-                    <option value="Oceania">Oceania</option>
+                    <option value="Oceania">Oceanía</option>
                 </select>
             </div>
 
@@ -252,31 +312,26 @@
             </div>
 
             <div id="extended-fields" class="hidden">
-                
                 <div class="form-section">
                     <label data-translate="label_rating_title">5. Evalúa del 1 (Malo) al 5 (Excelente):</label>
-                    
                     <div class="rating-row">
                         <span class="rating-label" data-translate="rate_path">El sendero y las formaciones:</span>
                         <div class="rating-options">
                             <script>for(let i=1; i<=5; i++) { document.write(`<label class="rating-opt"><input type="radio" name="rate_sendero" value="${i}"><span class="circle">${i}</span></label>`); }</script>
                         </div>
                     </div>
-
                     <div class="rating-row">
                         <span class="rating-label" data-translate="rate_signs">Señalética e info educativa:</span>
                         <div class="rating-options">
                             <script>for(let i=1; i<=5; i++) { document.write(`<label class="rating-opt"><input type="radio" name="rate_info" value="${i}"><span class="circle">${i}</span></label>`); }</script>
                         </div>
                     </div>
-
                     <div class="rating-row">
                         <span class="rating-label" data-translate="rate_clean">Limpieza y conservación:</span>
                         <div class="rating-options">
                             <script>for(let i=1; i<=5; i++) { document.write(`<label class="rating-opt"><input type="radio" name="rate_limpieza" value="${i}"><span class="circle">${i}</span></label>`); }</script>
                         </div>
                     </div>
-
                     <div class="rating-row">
                         <span class="rating-label" data-translate="rate_staff">Atención del personal:</span>
                         <div class="rating-options">
@@ -298,28 +353,27 @@
 
             <div class="form-section">
                 <label data-translate="label_nps">¿Recomendarías el parque a un familiar u amigo? (0-10)</label>
-                
                 <div class="nps-wrapper">
-                    <script>
-                        for(let i=0; i<=6; i++){ document.write(`<div class="nps-box detractor"><input type="radio" name="nps" value="${i}" required><span class="nps-label">${i}</span></div>`); }
-                    </script>
-                    <script>
-                        for(let i=7; i<=8; i++){ document.write(`<div class="nps-box passive"><input type="radio" name="nps" value="${i}" required><span class="nps-label">${i}</span></div>`); }
-                    </script>
-                    <script>
-                        for(let i=9; i<=10; i++){ document.write(`<div class="nps-box promoter"><input type="radio" name="nps" value="${i}" required><span class="nps-label">${i}</span></div>`); }
-                    </script>
+                    <script>for(let i=0; i<=6; i++){ document.write(`<div class="nps-box detractor"><input type="radio" name="nps" value="${i}" required><span class="nps-label">${i}</span></div>`); }</script>
+                    <script>for(let i=7; i<=8; i++){ document.write(`<div class="nps-box passive"><input type="radio" name="nps" value="${i}" required><span class="nps-label">${i}</span></div>`); }</script>
+                    <script>for(let i=9; i<=10; i++){ document.write(`<div class="nps-box promoter"><input type="radio" name="nps" value="${i}" required><span class="nps-label">${i}</span></div>`); }</script>
                 </div>
 
                 <div class="nps-legend">
-                    <span style="font-size: 0.8rem; color: #e74c3c;" data-translate="nps_no">😠 No</span>
-                    <span style="font-size: 0.8rem; color: #f1c40f;" data-translate="nps_maybe">😐 Quizás</span>
-                    <span style="font-size: 0.8rem; color: #27ae60;" data-translate="nps_yes">😃 ¡Sí!</span>
+                    <span style="font-size: 0.8rem; color: #e74c3c;" data-translate="nps_no">
+                        <i class="far fa-face-frown"></i> No
+                    </span>
+                    <span style="font-size: 0.8rem; color: #f1c40f;" data-translate="nps_maybe">
+                        <i class="far fa-face-meh"></i> Quizás
+                    </span>
+                    <span style="font-size: 0.8rem; color: #27ae60;" data-translate="nps_yes">
+                        <i class="far fa-face-smile"></i> ¡Sí!
+                    </span>
                 </div>
             </div>
 
             <div id="fast-comment-section" class="form-section">
-                <label data-translate="label_general_comment">¿Porque elegiste esa opción? Comentario:</label>
+                <label data-translate="label_general_comment">¿Por qué elegiste esa opción? Comentario:</label>
                 <textarea name="comentario_general" rows="2" placeholder="Escribe aquí..." data-placeholder="ph_general"></textarea>
             </div>
             
@@ -327,15 +381,53 @@
         </form>
     </div>
 
+    <button class="acc-trigger" onclick="toggleAccModal()" aria-label="Opciones de Accesibilidad">
+        <i class="fas fa-universal-access"></i>
+    </button>
+
+    <div id="acc-modal-overlay" class="acc-modal-overlay">
+        <div class="acc-modal">
+            <button class="acc-close" onclick="toggleAccModal()">&times;</button>
+            <h2 data-translate="acc_title">Herramientas de Accesibilidad</h2>
+            
+            <div class="acc-options">
+                <button class="acc-btn" onclick="toggleBodyClass('acc-mode-text-lg', this)">
+                    <i class="fas fa-font"></i>
+                    <div data-translate="acc_text">Texto Grande</div>
+                </button>
+
+                <button class="acc-btn" onclick="toggleBodyClass('acc-mode-contrast', this)">
+                    <i class="fas fa-circle-half-stroke"></i>
+                    <div data-translate="acc_contrast">Alto Contraste</div>
+                </button>
+
+                <button class="acc-btn" onclick="toggleBodyClass('acc-mode-grayscale', this)">
+                    <i class="fas fa-palette"></i>
+                    <div data-translate="acc_gray">Escala Grises</div>
+                </button>
+
+                <button class="acc-btn" onclick="toggleBodyClass('acc-mode-readable', this)">
+                    <i class="fas fa-glasses"></i>
+                    <div data-translate="acc_font">Fuente Legible</div>
+                </button>
+
+                 <button class="acc-btn" onclick="resetAccessibility()" style="grid-column: span 2; border-color: #e74c3c; color: #e74c3c;">
+                    <i class="fas fa-rotate-left"></i>
+                    <div data-translate="acc_reset">Restablecer Todo</div>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // --- 1. DICCIONARIO DE TRADUCCIÓN ---
+        // --- 1. DICCIONARIO DE TRADUCCIÓN (Actualizado con Iconos en HTML) ---
         const translations = {
             es: {
                 title: "Parque Paleontológico<br>Los Dedos",
                 subtitle: "Tu opinión nos importa",
-                btn_fast: "Encuesta Rápida 🚀",
-                btn_full: "Experiencia Completa 🦕",
-                btn_back: "Volver al inicio",
+                btn_fast: '<i class="fas fa-rocket"></i> Encuesta Rápida',
+                btn_full: '<i class="fas fa-bone"></i> Experiencia Completa',
+                btn_back: '<i class="fas fa-arrow-left"></i> Volver al inicio',
                 label_sector: "1. Sector a opinar:",
                 opt_select: "Selecciona...",
                 opt_zone1: "Zona 1: Acceso / Mandíbula",
@@ -362,19 +454,26 @@
                 label_problems: "7. ¿Algún problema o aspecto a mejorar?",
                 ph_problems: "Ej: Falta sombra, baños...",
                 label_nps: "¿Recomendarías el parque a un familiar u amigo? (0-10)",
-                nps_no: "😠 No",
-                nps_maybe: "😐 Quizás",
-                nps_yes: "😃 ¡Sí!",
+                nps_no: '<i class="far fa-face-frown"></i> No',
+                nps_maybe: '<i class="far fa-face-meh"></i> Quizás',
+                nps_yes: '<i class="far fa-face-smile"></i> ¡Sí!',
                 label_general_comment: "¿Por qué elegiste esa opción? Comentario:",
                 ph_general: "Escribe aquí...",
-                btn_submit: "Enviar Encuesta"
+                btn_submit: "Enviar Encuesta",
+                
+                acc_title: "Herramientas de Accesibilidad",
+                acc_text: "Texto Grande",
+                acc_contrast: "Alto Contraste",
+                acc_gray: "Escala Grises",
+                acc_font: "Fuente Legible",
+                acc_reset: "Restablecer Todo"
             },
             en: {
                 title: "Paleontological Park<br>Los Dedos",
                 subtitle: "Your opinion matters",
-                btn_fast: "Quick Survey 🚀",
-                btn_full: "Full Experience 🦕",
-                btn_back: "Back to Start",
+                btn_fast: '<i class="fas fa-rocket"></i> Quick Survey',
+                btn_full: '<i class="fas fa-bone"></i> Full Experience',
+                btn_back: '<i class="fas fa-arrow-left"></i> Back to Start',
                 label_sector: "1. Sector to rate:",
                 opt_select: "Select...",
                 opt_zone1: "Zone 1: Access / Jaw",
@@ -401,47 +500,43 @@
                 label_problems: "7. Any problems or improvements?",
                 ph_problems: "Ex: Lack of shade, restrooms...",
                 label_nps: "Would you recommend the park to a friend? (0-10)",
-                nps_no: "😠 No",
-                nps_maybe: "😐 Maybe",
-                nps_yes: "😃 Yes!",
+                nps_no: '<i class="far fa-face-frown"></i> No',
+                nps_maybe: '<i class="far fa-face-meh"></i> Maybe',
+                nps_yes: '<i class="far fa-face-smile"></i> Yes!',
                 label_general_comment: "Why did you choose that rating? Comment:",
                 ph_general: "Write here...",
-                btn_submit: "Submit Survey"
+                btn_submit: "Submit Survey",
+
+                acc_title: "Accessibility Tools",
+                acc_text: "Large Text",
+                acc_contrast: "High Contrast",
+                acc_gray: "Grayscale",
+                acc_font: "Readable Font",
+                acc_reset: "Reset All"
             }
         };
 
-        // --- 2. FUNCIÓN PARA CAMBIAR IDIOMA ---
+        // --- 2. FUNCIÓN DE IDIOMA ---
         function setLanguage(lang) {
-            // Actualizar textos normales
+            window.lang = lang; 
             const elements = document.querySelectorAll('[data-translate]');
             elements.forEach(el => {
                 const key = el.getAttribute('data-translate');
-                if (translations[lang][key]) {
-                    el.innerHTML = translations[lang][key];
-                }
+                if (translations[lang][key]) el.innerHTML = translations[lang][key];
             });
-
-            // Actualizar placeholders (textos dentro de inputs)
             const placeholders = document.querySelectorAll('[data-placeholder]');
             placeholders.forEach(el => {
                 const key = el.getAttribute('data-placeholder');
-                if (translations[lang][key]) {
-                    el.setAttribute('placeholder', translations[lang][key]);
-                }
+                if (translations[lang][key]) el.setAttribute('placeholder', translations[lang][key]);
             });
-
-            // Actualizar estado visual de los botones
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-            // Busca el botón que tiene el onclick con el idioma actual y lo activa
             document.querySelector(`.lang-btn[onclick="setLanguage('${lang}')"]`).classList.add('active');
         }
 
-
-        // --- CÓDIGO EXISTENTE DEL FORMULARIO ---
+        // --- 3. LÓGICA DEL FORMULARIO ---
         const selectionScreen = document.getElementById('selection-screen');
         const formContainer = document.getElementById('form-container');
         const extendedFields = document.getElementById('extended-fields');
-        const fastCommentSection = document.getElementById('fast-comment-section');
         const formTypeInput = document.getElementById('form-type');
 
         function selectForm(type) {
@@ -450,12 +545,10 @@
 
             if (type === 'fast') {
                 extendedFields.classList.add('hidden');
-                fastCommentSection.style.display = 'block';
                 formTypeInput.value = 'rapido';
                 setRequiredExtenso(false); 
             } else {
                 extendedFields.classList.remove('hidden');
-                fastCommentSection.style.display = 'block';
                 formTypeInput.value = 'extenso';
                 setRequiredExtenso(true);
             }
@@ -468,63 +561,82 @@
         }
 
         function setRequiredExtenso(isRequired) {
-            // Lógica para requerir campos si es necesario
+            const extendedInputs = extendedFields.querySelectorAll('input[type="radio"], textarea');
+            extendedInputs.forEach(input => {
+                if(input.name.startsWith('rate_')) { 
+                    input.required = isRequired;
+                }
+            });
         }
 
-        
+        // --- 4. ACCESIBILIDAD ---
+        function toggleAccModal() {
+            const modal = document.getElementById('acc-modal-overlay');
+            modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
+        }
 
+        document.getElementById('acc-modal-overlay').addEventListener('click', function(e) {
+            if (e.target === this) this.style.display = 'none';
+        });
+
+        function toggleBodyClass(className, btnElement) {
+            document.body.classList.toggle(className);
+            if (btnElement) btnElement.classList.toggle('active');
+        }
+
+        function resetAccessibility() {
+            document.body.classList.remove('acc-mode-text-lg', 'acc-mode-contrast', 'acc-mode-grayscale', 'acc-mode-readable');
+            const btns = document.querySelectorAll('.acc-btn');
+            btns.forEach(btn => btn.classList.remove('active'));
+        }
+
+        // --- 5. ENVÍO DATOS ---
         function getCSRFToken() {
-    return document.querySelector('meta[name="csrf-token"]').content;
-}
+            return document.querySelector('meta[name="csrf-token"]').content;
+        }
 
-    async function enviarFormulario() {
+        async function enviarFormulario() {
+            const data = {
+                sector: document.querySelector("select[name=sector]").value,
+                nacionalidad: document.querySelector("select[name=nacionalidad]").value,
+                edad: document.querySelector("select[name=edad]").value,
+                motivo: document.querySelector("select[name=motivo]").value,
+                rate_sendero: Number(document.querySelector("input[name=rate_sendero]:checked")?.value || 0),
+                rate_info: Number(document.querySelector("input[name=rate_info]:checked")?.value || 0),
+                rate_limpieza: Number(document.querySelector("input[name=rate_limpieza]:checked")?.value || 0),
+                rate_personal: Number(document.querySelector("input[name=rate_personal]:checked")?.value || 0),
+                comentario_positivo: document.querySelector("textarea[name=comentario_positivo]").value,
+                comentario_negativo: document.querySelector("textarea[name=comentario_negativo]").value,
+                comentario_general: document.querySelector("textarea[name=comentario_general]").value,
+                nps: Number(document.querySelector("input[name=nps]:checked")?.value || 0),
+                consent: true,
+                language: window.lang || "es",
+                type: document.getElementById("form-type").value
+            };
 
-    const data = {
-        sector: document.querySelector("select[name=sector]").value,
-        nacionalidad: document.querySelector("select[name=nacionalidad]").value,
-        edad: document.querySelector("select[name=edad]").value,
-        motivo: document.querySelector("select[name=motivo]").value,
+            const response = await fetch("/api/submit/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFToken(),
+                },
+                body: JSON.stringify(data)
+            });
+            return await response.json();
+        }
 
-        rate_sendero: Number(document.querySelector("input[name=rate_sendero]:checked")?.value || 0),
-        rate_info: Number(document.querySelector("input[name=rate_info]:checked")?.value || 0),
-        rate_limpieza: Number(document.querySelector("input[name=rate_limpieza]:checked")?.value || 0),
-        rate_personal: Number(document.querySelector("input[name=rate_personal]:checked")?.value || 0),
-
-        comentario_positivo: document.querySelector("textarea[name=comentario_positivo]").value,
-        comentario_negativo: document.querySelector("textarea[name=comentario_negativo]").value,
-        comentario_general: document.querySelector("textarea[name=comentario_general]").value,
-
-        nps: Number(document.querySelector("input[name=nps]:checked")?.value || 0),
-
-        consent: true,
-        language: window.lang || "es",
-        type: document.getElementById("form-type").value  // rápido o extenso
-    };
-
-    const response = await fetch("/api/submit/", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": getCSRFToken(),
-        },
-        body: JSON.stringify(data)
-    });
-
-    return await response.json();
-}
-
-
-
-async function submitForm(event) {
-    event.preventDefault();
-    
-    await enviarFormulario();  // ← ESTE ERA EL PASO QUE FALTABA
-    
-    alert("¡Gracias! Tu opinión es vital para el Parque Los Dedos.");
-    event.target.reset();
-    goBack();
-}
-
+        async function submitForm(event) {
+            event.preventDefault();
+            try {
+                await enviarFormulario();
+                alert("¡Gracias! Tu opinión es vital para el Parque Los Dedos.");
+                event.target.reset();
+                goBack();
+            } catch (error) {
+                console.error(error);
+                alert("Hubo un error al enviar. Intenta de nuevo.");
+            }
+        }
     </script>
 </body>
 </html>
