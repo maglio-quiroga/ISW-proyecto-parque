@@ -1,0 +1,211 @@
+/* =========================================
+           ESTILOS GENERALES (CIAHN)
+           ========================================= */
+        :root {
+            --color-primary: #008C99;
+            --color-secondary: #00acc1;
+            --color-bg-page: #f0f2f5;
+            --color-text: #333333;
+            --color-white: #ffffff;
+            --color-gray-light: #e0e0e0;
+
+            /* COLORES NPS SEMÁFORO */
+            --nps-red: #e74c3c;    
+            --nps-yellow: #f1c40f; 
+            --nps-green: #27ae60;  
+        }
+
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0; padding: 0;
+            background-color: var(--color-bg-page);
+            color: var(--color-text);
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            transition: all 0.3s ease;
+        }
+
+
+        .container {
+            width: 90%; max-width: 450px;
+            margin: 20px auto; padding: 20px 25px;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 140, 153, 0.25);
+            position: relative; border-top: 5px solid var(--color-primary);
+            max-height: 90vh; overflow-y: auto;
+        }
+
+        /* Botones de Idioma */
+        .lang-switch {
+            position: absolute; top: 15px; right: 20px;
+            display: flex; gap: 10px;
+        }
+        .lang-btn {
+            background: none; border: 1px solid var(--color-primary);
+            border-radius: 20px; padding: 5px 10px;
+            cursor: pointer; font-size: 0.8rem; font-weight: bold;
+            color: var(--color-primary); transition: all 0.3s;
+        }
+        .lang-btn.active, .lang-btn:hover {
+            background: var(--color-primary); color: white;
+        }
+
+        header { text-align: center; margin-bottom: 15px; margin-top: 25px; }
+        .logo-header { max-width: 130px; height: auto; display: block; margin: 0 auto 10px auto; }
+        h1 {
+            color: var(--color-primary); font-size: 1.3rem; margin: 5px 0;
+            text-transform: uppercase; font-weight: 700;
+        }
+        p.subtitle { font-size: 0.9rem; color: #666; margin: 0; }
+
+        /* Pantalla Selección */
+        #selection-screen { text-align: center; padding: 10px 0; }
+        .btn-choice {
+            display: flex; align-items: center; justify-content: center; gap: 10px; /* Alineación icono-texto */
+            width: 100%; padding: 25px; margin: 30px 0;
+            border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold;
+            cursor: pointer; color: white; box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .btn-choice i { font-size: 1.4rem; } /* Tamaño iconos botones */
+        .btn-fast { background: linear-gradient(135deg, var(--color-secondary), var(--color-primary)); }
+        .btn-full { background: linear-gradient(135deg, var(--color-primary), #006064); }
+        .btn-choice:hover { transform: translateY(-2px); }
+
+        /* Formularios */
+        #form-container { display: none; }
+        .form-section { margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .form-section:last-child { border-bottom: none; }
+
+        label { display: block; margin-bottom: 5px; font-weight: 600; color: var(--color-primary); font-size: 0.9rem; }
+        select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95rem; background: #f9f9f9; box-sizing: border-box; }
+
+        /* Rating 1-5 */
+        .rating-row { margin-bottom: 12px; background: #fdfdfd; padding: 8px; border-radius: 6px; }
+        .rating-label { font-size: 0.85rem; margin-bottom: 5px; display: block; color: #444; }
+        .rating-options { display: flex; justify-content: space-between; }
+        .rating-opt { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .rating-opt input { display: none; } 
+        .circle {
+            width: 25px; height: 25px; border-radius: 50%; background: #eee;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; font-weight: bold; color: #666; transition: all 0.2s;
+        }
+        .rating-opt input:checked + .circle { background: var(--color-primary); color: white; transform: scale(1.1); }
+
+        /* NPS Styles */
+        .nps-wrapper { display: flex; justify-content: space-between; gap: 2px; margin-top: 5px; }
+        .nps-box { position: relative; flex: 1; }
+        .nps-box input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; z-index: 2; }
+        
+        .nps-label {
+            display: block; text-align: center; padding: 10px 0; background: #eee;
+            color: #555; font-weight: bold; font-size: 0.9rem; border-radius: 4px;
+            transition: all 0.2s; border-bottom: 3px solid transparent;
+        }
+
+        .nps-box.detractor .nps-label { border-bottom-color: #e57373; }
+        .nps-box.detractor input:checked + .nps-label, .nps-box.detractor:hover .nps-label { 
+            background: var(--nps-red); color: white; border-bottom-color: var(--nps-red); 
+        }
+        .nps-box.passive .nps-label { border-bottom-color: #f1c40f; }
+        .nps-box.passive input:checked + .nps-label, .nps-box.passive:hover .nps-label { 
+            background: var(--nps-yellow); color: white; border-bottom-color: var(--nps-yellow);
+        }
+        .nps-box.promoter .nps-label { border-bottom-color: #2ecc71; }
+        .nps-box.promoter input:checked + .nps-label, .nps-box.promoter:hover .nps-label { 
+            background: var(--nps-green); color: white; border-bottom-color: var(--nps-green); 
+        }
+        
+        /* Leyenda NPS con Iconos */
+        .nps-legend { display: flex; justify-content: space-between; margin-top: 5px; padding: 0 5px; }
+        .nps-legend span { display: flex; align-items: center; gap: 5px; font-weight: 600; }
+        .nps-legend i { font-size: 1.1rem; }
+
+        .submit-btn {
+            background-color: var(--color-primary); color: white; width: 100%; padding: 15px;
+            border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 10px;
+        }
+        .back-btn {
+            display:flex; align-items: center; justify-content: center; background-color: transparent;
+            border: 2px solid var(--color-primary); color: var(--color-primary);
+            padding: 8px 20px; border-radius: 50px; font-weight: 700; font-size: 0.9rem;
+            cursor: pointer; transition: all 0.3s ease; text-decoration: none; margin: 0 auto 20px auto;
+        }
+        .back-btn i { margin-right: 8px; }
+        .back-btn:hover { background-color: var(--color-primary); color: white; }
+        .hidden { display: none; }
+
+        /* =========================================
+           ESTILOS DE ACCESIBILIDAD
+           ========================================= */
+        .acc-trigger {
+            position: fixed; bottom: 20px; left: 20px;
+            width: 50px; height: 50px;
+            background-color: var(--color-primary); color: white;
+            border-radius: 50%; border: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            font-size: 1.5rem; cursor: pointer; z-index: 1000;
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.3s;
+        }
+        .acc-trigger:hover { transform: scale(1.1); }
+
+        .acc-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 2000;
+            display: none; justify-content: center; align-items: center;
+        }
+        .acc-modal {
+            background: white; width: 90%; max-width: 400px;
+            border-radius: 12px; padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative;
+        }
+        .acc-modal h2 { color: var(--color-primary); margin-top: 0; font-size: 1.2rem; text-align: center; }
+        .acc-close {
+            position: absolute; top: 10px; right: 15px;
+            font-size: 1.5rem; cursor: pointer; color: #666;
+            background: none; border: none;
+        }
+
+        .acc-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .acc-btn {
+            padding: 12px; border: 1px solid var(--color-primary);
+            background: white; color: var(--color-primary);
+            border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+            display: flex; flex-direction: column; align-items: center; transition: all 0.2s;
+        }
+        .acc-btn:hover, .acc-btn.active { background: var(--color-primary); color: white; }
+        
+        /* Iconos dentro del modal */
+        .acc-btn i { font-size: 1.5rem; margin-bottom: 8px; }
+
+        /* Modos Accesibilidad */
+        body.acc-mode-text-lg { font-size: 1.2rem; }
+        body.acc-mode-text-lg .container { max-width: 600px; }
+        
+        body.acc-mode-contrast {
+            --color-primary: #ffff00;   
+            --color-secondary: #00ffff; 
+            --color-bg-page: #000000;   
+            --color-text: #ffffff;      
+            --color-white: #000000;     
+            --color-gray-light: #333333;
+        }
+        body.acc-mode-contrast .container { border: 2px solid white; background: #000; }
+        body.acc-mode-contrast .background-overlay { display: none; }
+        body.acc-mode-contrast .btn-choice, 
+        body.acc-mode-contrast .submit-btn { 
+            background: black; border: 2px solid var(--color-primary); color: var(--color-primary); 
+        }
+        body.acc-mode-contrast input, 
+        body.acc-mode-contrast select, 
+        body.acc-mode-contrast textarea {
+            background: #000; color: #fff; border: 1px solid white;
+        }
+        
+        body.acc-mode-grayscale { filter: grayscale(100%); }
+        body.acc-mode-readable { font-family: 'Verdana', 'Arial', sans-serif; letter-spacing: 0.05rem; word-spacing: 0.1rem; line-height: 1.6; }
